@@ -50,10 +50,30 @@ def fs_segment_image(img_file: str) -> None:
         io.imsave(new_char_file(), extract_img(img, r.bbox))
 
 
-def main():
+def segment_all_captchas() -> None:
     imgs = os.listdir('images')
     for img in imgs:
         fs_segment_image('images/{}'.format(img))
+
+
+def extend_img(img: np.ndarray, new_height: int, new_width: int) -> np.ndarray:
+    height, width = img.shape
+    return np.pad(
+        img,
+        ((0, new_height - height), (0, new_width - width)),
+        mode='constant', constant_values=255
+    )
+
+
+def main():
+    img = io.imread('images/GYNFEE.jpg')
+    img = binary_img(img)
+    chars = [extract_img(img, region.bbox) for region in img_segments(img)]
+    max_height = max(map(lambda c: c.shape[0], chars))
+    max_width = max(map(lambda c: c.shape[1], chars))
+    for char_img in chars:
+        io.imshow(extend_img(char_img, max_height, max_width))
+        io.show()
 
 
 main()

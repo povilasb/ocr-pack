@@ -1,4 +1,6 @@
 from typing import Tuple
+import os
+
 from skimage import io, filters, feature, segmentation, measure, morphology
 import numpy as np
 
@@ -30,19 +32,28 @@ def binary_img(img: np.ndarray) -> np.ndarray:
     return bin_img
 
 
-def main():
-    img = io.imread('images/HXUUNR.jpg')
-    img = binary_img(img)
-
+def img_segments(img: np.ndarray) -> list:
     labels = morphology.label(img, background=255)
     regions = measure.regionprops(labels)
-    regions = sorted(regions, key=lambda r: r.bbox[1])
+    return sorted(regions, key=lambda r: r.bbox[1])
 
-    io.imsave('result.png', extract_img(img, regions[1].bbox))
 
-    for r in regions:
-        io.imshow(extract_img(img, r.bbox))
-        io.show()
+def new_char_file(chars_dir: str='chars') -> str:
+    chars = os.listdir(chars_dir)
+    return '{}/{}.png'.format(chars_dir, len(chars) or 0)
+
+
+def fs_segment_image(img_file: str) -> None:
+    img = io.imread(img_file)
+    img = binary_img(img)
+    for r in img_segments(img):
+        io.imsave(new_char_file(), extract_img(img, r.bbox))
+
+
+def main():
+    imgs = os.listdir('images')
+    for img in imgs:
+        fs_segment_image('images/{}'.format(img))
 
 
 main()

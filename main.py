@@ -1,5 +1,6 @@
-from typing import Tuple
+from typing import Tuple, Iterable
 import os
+import itertools as it
 
 from skimage import io, filters, feature, segmentation, measure, morphology
 import numpy as np
@@ -32,10 +33,11 @@ def binary_img(img: np.ndarray) -> np.ndarray:
     return bin_img
 
 
-def img_segments(img: np.ndarray) -> list:
+def img_segments(img: np.ndarray) -> Iterable[np.ndarray]:
     labels = morphology.label(img, background=255)
     regions = measure.regionprops(labels)
-    return sorted(regions, key=lambda r: r.bbox[1])
+    return map(lambda region: extract_img(img, region.bbox),
+               sorted(regions, key=lambda r: r.bbox[1]))
 
 
 def new_char_file(chars_dir: str='chars') -> str:
@@ -46,8 +48,8 @@ def new_char_file(chars_dir: str='chars') -> str:
 def fs_segment_image(img_file: str) -> None:
     img = io.imread(img_file)
     img = binary_img(img)
-    for r in img_segments(img):
-        io.imsave(new_char_file(), extract_img(img, r.bbox))
+    for segment in img_segments(img):
+        io.imsave(new_char_file(), segment)
 
 
 def segment_all_captchas() -> None:
@@ -67,11 +69,10 @@ def extend_img(img: np.ndarray, new_height: int, new_width: int) -> np.ndarray:
 
 def main():
     img = io.imread('images/GYNFEE.jpg')
-    img = binary_img(img)
-    chars = [extract_img(img, region.bbox) for region in img_segments(img)]
-    max_height = max(map(lambda c: c.shape[0], chars))
-    max_width = max(map(lambda c: c.shape[1], chars))
-    for char_img in chars:
+    chars1, chars2, chars3 = it.tee(img_segments(binary_img(img)), 3)
+    max_height = max(map(lambda c: c.shape[0], chars1))
+    max_width = max(map(lambda c: c.shape[1], chars2))
+    for char_img in chars3:
         io.imshow(extend_img(char_img, max_height, max_width))
         io.show()
 

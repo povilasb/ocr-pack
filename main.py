@@ -63,25 +63,27 @@ class Image:
         io.show()
 
 
+def images_in(dir_path: str) -> Iterable[Image]:
+    return map(lambda fname: Image.read_from('{}/{}'.format(dir_path, fname)),
+               os.listdir(dir_path))
+
+
 def new_char_file(chars_dir: str='chars') -> str:
     chars = os.listdir(chars_dir)
     return '{}/{}.png'.format(chars_dir, len(chars) or 0)
 
 
-def fs_segment_image(img_file: str) -> None:
-    img = Image.read_from(img_file).binary()
-    for segment in img.segments():
+def fs_segment_image(img: Image) -> None:
+    for segment in img.binary().segments():
         segment.save_to(new_char_file())
 
 
 def segment_all_captchas() -> None:
-    imgs = os.listdir('images')
-    for img in imgs:
-        fs_segment_image('images/{}'.format(img))
+    for img in images_in('images'):
+        fs_segment_image(img)
 
 
-def max_char_size(img_file: str) -> Tuple[int, int]:
-    img = Image.read_from(img_file).binary()
+def max_char_size(img: Image) -> Tuple[int, int]:
     chars1, chars2 = it.tee(img.segments())
     max_height = max(map(lambda c: c.height, chars1))
     max_width = max(map(lambda c: c.width, chars2))
@@ -91,9 +93,8 @@ def max_char_size(img_file: str) -> Tuple[int, int]:
 def max_char_size_in_images() -> Tuple[int, int]:
     max_height = 0
     max_width = 0
-    imgs = os.listdir('images')
-    for img in imgs:
-        height, width = max_char_size('images/{}'.format(img))
+    for img in images_in('images'):
+        height, width = max_char_size(img)
         max_height = max(max_height, height)
         max_width = max(max_width, width)
     return max_height, max_width

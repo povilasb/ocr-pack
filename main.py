@@ -20,24 +20,47 @@ io.use_plugin('matplotlib')
 Rect = Tuple[int, int, int, int]
 
 
-def extract_img(img: np.ndarray, rect: Rect) -> np.ndarray:
-    return img[rect[0]:rect[2], rect[1]:rect[3]]
+class Image:
+    def __init__(self, array: np.ndarray) -> None:
+        self._array = array
+        self.height = array.shape[0]
+        self.width = array.shape[1]
 
+    @classmethod
+    def read_from(cls: 'Image', fname: str) -> 'Image':
+        return cls(io.imread(fname))
 
-def binary_img(img: np.ndarray) -> np.ndarray:
-    background_pos = img > 29
-    char_pos = img < 30
-    bin_img = img.copy()
-    bin_img[char_pos] = 0
-    bin_img[background_pos] = 255
-    return bin_img
+    def save_to(self, fname: str) -> None:
+        io.imsave(fname, self._array)
 
+    def binary(self) -> 'Image':
+        background_pos = self._array > 29
+        char_pos = self._array < 30
+        bin_img = self._array.copy()
+        bin_img[char_pos] = 0
+        bin_img[background_pos] = 255
+        return Image(bin_img)
 
-def img_segments(img: np.ndarray) -> Iterable[np.ndarray]:
-    labels = morphology.label(img, background=255)
-    regions = measure.regionprops(labels)
-    return map(lambda region: extract_img(img, region.bbox),
-               sorted(regions, key=lambda r: r.bbox[1]))
+    def rect(self, rect: Rect) -> 'Image':
+        return Image(self._array[rect[0]:rect[2], rect[1]:rect[3]])
+
+    def segments(self) -> Iterable['Image']:
+        labels = morphology.label(self._array, background=255)
+        regions = measure.regionprops(labels)
+        return map(lambda region: self.rect(region.bbox),
+                   sorted(regions, key=lambda r: r.bbox[1]))
+
+    def extend_to(self, new_height: int, new_width: int) -> 'Image':
+        height, width = self._array.shape
+        return Image(np.pad(
+            self._array,
+            ((0, new_height - height), (0, new_width - width)),
+            mode='constant', constant_values=255
+        ))
+
+    def show(self) -> None:
+        io.imshow(self._array)
+        io.show()
 
 
 def new_char_file(chars_dir: str='chars') -> str:
@@ -46,10 +69,9 @@ def new_char_file(chars_dir: str='chars') -> str:
 
 
 def fs_segment_image(img_file: str) -> None:
-    img = io.imread(img_file)
-    img = binary_img(img)
-    for segment in img_segments(img):
-        io.imsave(new_char_file(), segment)
+    img = Image.read_from(img_file).binary()
+    for segment in img.segments():
+        segment.save_to(new_char_file())
 
 
 def segment_all_captchas() -> None:
@@ -58,23 +80,28 @@ def segment_all_captchas() -> None:
         fs_segment_image('images/{}'.format(img))
 
 
-def extend_img(img: np.ndarray, new_height: int, new_width: int) -> np.ndarray:
-    height, width = img.shape
-    return np.pad(
-        img,
-        ((0, new_height - height), (0, new_width - width)),
-        mode='constant', constant_values=255
-    )
+def max_char_size(img_file: str) -> Tuple[int, int]:
+    img = Image.read_from(img_file).binary()
+    chars1, chars2 = it.tee(img.segments())
+    max_height = max(map(lambda c: c.height, chars1))
+    max_width = max(map(lambda c: c.width, chars2))
+    return max_height, max_width
+
+
+def max_char_size_in_images() -> Tuple[int, int]:
+    max_height = 0
+    max_width = 0
+    imgs = os.listdir('images')
+    for img in imgs:
+        height, width = max_char_size('images/{}'.format(img))
+        max_height = max(max_height, height)
+        max_width = max(max_width, width)
+    return max_height, max_width
 
 
 def main():
-    img = io.imread('images/GYNFEE.jpg')
-    chars1, chars2, chars3 = it.tee(img_segments(binary_img(img)), 3)
-    max_height = max(map(lambda c: c.shape[0], chars1))
-    max_width = max(map(lambda c: c.shape[1], chars2))
-    for char_img in chars3:
-        io.imshow(extend_img(char_img, max_height, max_width))
-        io.show()
+    max_height, max_width = max_char_size_in_images()
+    print(max_height, max_width)
 
 
 main()

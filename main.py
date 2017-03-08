@@ -87,25 +87,18 @@ def segment_all_captchas() -> None:
         fs_segment_image(img)
 
 
-def max_char_size(img: Image) -> Tuple[int, int]:
-    chars1, chars2 = it.tee(img.segments())
-    max_height = max(map(lambda c: c.height, chars1))
-    max_width = max(map(lambda c: c.width, chars2))
-    return max_height, max_width
-
-
-def max_char_size_in_images() -> Tuple[int, int]:
-    max_height = 0
-    max_width = 0
-    for img in images_in('images'):
-        height, width = max_char_size(img)
-        max_height = max(max_height, height)
-        max_width = max(max_width, width)
-    return max_height, max_width
+def max_char_size_in(imgs: Iterable[Image]) -> Tuple[int, int]:
+    imgs1, imgs2 = it.tee(imgs)
+    return (
+        max(map(lambda i: i.height, imgs1)),
+        max(map(lambda i: i.width, imgs2)),
+    )
 
 
 def main():
-    max_height, max_width = max_char_size_in_images()
+    imgs = [images_in('labelled-chars/{}'.format(char))
+            for char in os.listdir('labelled-chars')]
+    max_height, max_width = max_char_size_in(it.chain.from_iterable(imgs))
     print(max_height, max_width)
 
 

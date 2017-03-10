@@ -34,12 +34,18 @@ class Image:
         self.width = array.shape[1]
 
     @classmethod
-    def read_from(cls: 'Image', fname: str) -> 'Image':
-        return cls(io.imread(fname), background=1)
+    def read_from(cls: 'Image', fname: str, background=255) -> 'Image':
+        img = io.imread(fname)
+        return cls(img, background=background)
 
     def with_label(self, label: str) -> 'Image':
         self.label = label
         return self
+
+    def with_background(self, background: int) -> 'Image':
+        new_img = self._array.copy()
+        new_img[new_img == self._background] = background
+        return Image(new_img, self.label, background)
 
     def save_to(self, fname: str) -> None:
         io.imsave(fname, self._array)
@@ -83,13 +89,15 @@ class Image:
         io.show()
 
 
-def images_in(dir_path: str) -> Iterable[Image]:
-    return map(lambda fname: Image.read_from('{}/{}'.format(dir_path, fname)),
+def images_in(dir_path: str, background: int=255) -> Iterable[Image]:
+    return map(lambda fname: Image.read_from('{}/{}'.format(dir_path, fname),
+                                             background),
                os.listdir(dir_path))
 
 
 def labelled_images_in(dir_path: str, label: str) -> Iterable[Image]:
-    return map(lambda img: img.with_label(label), images_in(dir_path))
+    return map(lambda img: img.with_label(label),
+               images_in(dir_path, background=1))
 
 
 def new_char_file(chars_dir: str='chars') -> str:

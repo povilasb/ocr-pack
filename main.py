@@ -165,18 +165,16 @@ def main():
     print('Normalized size:', data.max_height, data.max_width)
 
     imgs, labels = data.all_labelled_imgs()
-    clf = KNeighborsClassifier()
+    clf = KNeighborsClassifier(3)
     clf.fit(imgs, labels)
     print(clf.predict(imgs[labels.index('H')]))
 
-    return
-
-    chars = list(Image.read_from('images.bk/HXUUNR.jpg').binary().segments())
+    chars = list(Image.read_from('images.bk/GYNFEE.jpg').binary().segments())
     for char in chars:
         char = char.with_background(1)\
             .extend_to(data.max_height, data.max_width)\
-            .invert()
-        print(clf.predict(char._array.flatten()))
+            .invert()._array.flatten()
+        print(clf.predict(char))
 
 
 main()

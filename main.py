@@ -38,6 +38,10 @@ class Image:
         img = io.imread(fname)
         return cls(img, background=background)
 
+    @classmethod
+    def read_from_array(cls: 'Image', fname: str, background=1) -> 'Image':
+        return cls(np.load(fname), background=background)
+
     def with_label(self, label: str) -> 'Image':
         self.label = label
         return self
@@ -48,11 +52,11 @@ class Image:
         return Image(new_img, self.label, background)
 
     def save_to(self, fname: str) -> None:
-        io.imsave(fname, self._array)
+        np.save(fname, self._array, allow_pickle=False)
 
-    def binary(self) -> 'Image':
-        background_pos = self._array > 29
-        char_pos = self._array < 30
+    def binary(self, threshold: int=30) -> 'Image':
+        background_pos = self._array >= threshold
+        char_pos = self._array < threshold
         bin_img = self._array.copy()
         bin_img[char_pos] = 0
         bin_img[background_pos] = self._background
@@ -102,7 +106,7 @@ def labelled_images_in(dir_path: str, label: str) -> Iterable[Image]:
 
 def new_char_file(chars_dir: str='chars') -> str:
     chars = os.listdir(chars_dir)
-    return '{}/{}.png'.format(chars_dir, len(chars) or 0)
+    return '{}/{}.npy'.format(chars_dir, len(chars) or 0)
 
 
 def fs_segment_image(img: Image) -> None:
@@ -156,13 +160,25 @@ class TrainingData:
 
 
 def main():
+    img = Image.read_from_array('labelled-chars/H/0.npy')
+    print(img._array.dtype)
+    return
     data = TrainingData()
     print('Normalized size:', data.max_height, data.max_width)
 
     imgs, labels = data.all_labelled_imgs()
     clf = KNeighborsClassifier()
     clf.fit(imgs, labels)
-    print(clf.predict(imgs[labels.index('X')]))
+    print(clf.predict(imgs[labels.index('H')]))
+
+    return
+
+    chars = list(Image.read_from('images.bk/HXUUNR.jpg').binary().segments())
+    for char in chars:
+        char = char.with_background(1)\
+            .extend_to(data.max_height, data.max_width)\
+            .invert()
+        print(clf.predict(char._array.flatten()))
 
 
 main()

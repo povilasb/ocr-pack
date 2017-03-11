@@ -93,15 +93,14 @@ class Image:
         io.show()
 
 
-def images_in(dir_path: str, background: int=255) -> Iterable[Image]:
-    return map(lambda fname: Image.read_from('{}/{}'.format(dir_path, fname),
-                                             background),
+def images_in(dir_path: str) -> Iterable[Image]:
+    return map(lambda fname: Image.read_from_array('{}/{}'.format(dir_path,
+                                                                  fname)),
                os.listdir(dir_path))
 
 
 def labelled_images_in(dir_path: str, label: str) -> Iterable[Image]:
-    return map(lambda img: img.with_label(label),
-               images_in(dir_path, background=1))
+    return map(lambda img: img.with_label(label), images_in(dir_path))
 
 
 def new_char_file(chars_dir: str='chars') -> str:
@@ -128,8 +127,10 @@ def max_char_size_in(imgs: Iterable[Image]) -> Tuple[int, int]:
 
 
 def all_labelled_images() -> Iterable[Image]:
-    return it.chain.from_iterable([images_in('labelled-chars/{}'.format(char))
-        for char in os.listdir('labelled-chars')])
+    return it.chain.from_iterable([
+        images_in('labelled-chars/{}'.format(char))
+        for char in os.listdir('labelled-chars')
+    ])
 
 
 class TrainingData:
@@ -160,9 +161,6 @@ class TrainingData:
 
 
 def main():
-    img = Image.read_from_array('labelled-chars/H/0.npy')
-    print(img._array.dtype)
-    return
     data = TrainingData()
     print('Normalized size:', data.max_height, data.max_width)
 

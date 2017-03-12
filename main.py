@@ -7,6 +7,7 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 
 from gfx import Image
+import ml
 
 io.use_plugin('matplotlib')
 
@@ -91,19 +92,12 @@ class TrainingData:
 
 def main():
     data = TrainingData()
-    print('Normalized size:', data.max_height, data.max_width)
-
     imgs, labels = data.all_labelled_imgs()
-    clf = KNeighborsClassifier(3)
+    clf = ml.CharClassifier(data.max_height, data.max_width)
     clf.fit(imgs, labels)
     print(clf.predict(imgs[labels.index('H')]))
 
-    chars = list(Image.read_from('images.bk/GYNFEE.jpg').binary().segments())
-    for char in chars:
-        char = char.with_background(1)\
-            .extend_to(data.max_height, data.max_width)\
-            .invert()._array.flatten()
-        print(clf.predict(char))
+    # joblib.dump(clf, 'char_classifier.pkl')
 
 
 main()

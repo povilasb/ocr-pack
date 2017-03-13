@@ -2,6 +2,7 @@ from typing import Iterable, Tuple
 
 import numpy as np
 from skimage import io, morphology, measure
+io.use_plugin('matplotlib')
 
 
 Rect = Tuple[int, int, int, int]

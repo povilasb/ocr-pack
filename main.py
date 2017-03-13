@@ -2,14 +2,10 @@ from typing import Tuple, Iterable, List
 import os
 import itertools as it
 
-from skimage import io, filters, feature, segmentation, measure, morphology
 import numpy as np
-from sklearn.neighbors import KNeighborsClassifier
 
 from gfx import Image
 import ml
-
-io.use_plugin('matplotlib')
 
 
 # TODO:

@@ -57,13 +57,23 @@ class Image:
         return Image(new_img, self.label)
 
     def rect(self, rect: Rect) -> 'Image':
-        return Image(self._array[rect[0]:rect[2], rect[1]:rect[3]])
+        return Image(self._array[rect[0]:rect[2], rect[1]:rect[3]],
+                     self.label, background=self._background)
 
     def segments(self) -> Iterable['Image']:
         labels = morphology.label(self._array, background=self._background)
         regions = measure.regionprops(labels)
         return map(lambda region: self.rect(region.bbox),
                    sorted(regions, key=lambda r: r.bbox[1]))
+
+    def resize_to(self, new_height: int, new_width: int) -> 'Image':
+        height, width = self._array.shape
+        if height < new_height:
+            height = new_height
+        if width < new_width:
+            width = new_width
+        new_img = self.extend_to(height, width)
+        return new_img.rect((0, 0, new_height, new_width))
 
     def extend_to(self, new_height: int, new_width: int) -> 'Image':
         height, width = self._array.shape

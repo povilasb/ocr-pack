@@ -93,7 +93,5 @@ def main():
     clf.fit(imgs, labels)
     print(clf.predict(imgs[labels.index('H')]))
 
-    # joblib.dump(clf, 'char_classifier.pkl')
-
 
 main()

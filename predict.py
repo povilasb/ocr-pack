@@ -1,12 +1,10 @@
 import sys
 
-from sklearn.externals import joblib
-
 from gfx import Image
-from ml import CharClassifier
+import ml
 
 
-def do_ocr(img: Image, clf: CharClassifier) -> str:
+def do_ocr(img: Image, clf: ml.CharClassifier) -> str:
     chars = img.binary().segments()
     char_arrays = map(
         lambda c: c.with_background(1)
@@ -21,7 +19,7 @@ def do_ocr(img: Image, clf: CharClassifier) -> str:
 def main(args=sys.argv[1:]):
     img_path = args[0]
     img = Image.read_from(img_path)
-    clf = joblib.load('char_classifier.pkl')
+    clf = ml.CharClassifier.load_from('char_classifier.pkl')
     print(do_ocr(img, clf))
 
 

@@ -20,7 +20,7 @@ class Image:
 
     @classmethod
     def read_from(cls: 'Image', fname: str, background=255) -> 'Image':
-        img = io.imread(fname)
+        img = io.imread(fname).astype('uint8')
         return cls(img, background=background)
 
     @classmethod

@@ -8,9 +8,9 @@ def do_ocr(img: Image, clf: ml.CharClassifier) -> str:
     chars = img.binary().segments()
     char_arrays = map(
         lambda c: c.with_background(1)
-                   .extend_to(clf.img_height, clf.img_width)
+                   .resize_to(clf.img_height, clf.img_width)
                    .invert()._array.flatten(),
-        chars
+        filter(lambda c: c.width * c.height > 400, chars)
     )
     predicted_letters = clf.predict(list(char_arrays))
     return ''.join(predicted_letters)

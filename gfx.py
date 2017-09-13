@@ -48,9 +48,11 @@ class Image:
         background_pos = self._array >= threshold
         char_pos = self._array < threshold
         bin_img = self._array.copy()
+        # TODO: 0 is not the best value to mark object - background might also
+        # be 0.
         bin_img[char_pos] = 0
         bin_img[background_pos] = self._background
-        return Image(bin_img, self.label)
+        return Image(bin_img, self.label, self._background)
 
     def invert(self) -> 'Image':
         """Only works with binary images."""
@@ -59,7 +61,7 @@ class Image:
         new_img = self._array.copy()
         new_img[foreground_pos] = self._background
         new_img[background_pos] = 0
-        return Image(new_img, self.label)
+        return Image(new_img, self.label, background=0)
 
     def rect(self, rect: Rect) -> 'Image':
         return Image(self._array[rect[0]:rect[2], rect[1]:rect[3]],

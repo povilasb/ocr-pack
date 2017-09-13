@@ -34,16 +34,6 @@ def new_char_file(chars_dir: str='chars') -> str:
     return '{}/{}.npy'.format(chars_dir, len(chars) or 0)
 
 
-def fs_segment_image(img: Image) -> None:
-    for segment in img.binary().segments():
-        segment.save_to(new_char_file())
-
-
-def segment_all_captchas() -> None:
-    for img in images_in('images'):
-        fs_segment_image(img)
-
-
 def max_char_size_in(imgs: Iterable[Image]) -> Tuple[int, int]:
     imgs1, imgs2 = it.tee(imgs)
     return (

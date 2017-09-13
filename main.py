@@ -29,11 +29,6 @@ def labelled_images_in(dir_path: str, label: str) -> Iterable[Image]:
     return map(lambda img: img.with_label(label), images_in(dir_path))
 
 
-def new_char_file(chars_dir: str='chars') -> str:
-    chars = os.listdir(chars_dir)
-    return '{}/{}.npy'.format(chars_dir, len(chars) or 0)
-
-
 def max_char_size_in(imgs: Iterable[Image]) -> Tuple[int, int]:
     imgs1, imgs2 = it.tee(imgs)
     return (

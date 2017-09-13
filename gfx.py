@@ -19,8 +19,9 @@ class Image:
         self.width = array.shape[1]
 
     @classmethod
-    def read_from(cls: 'Image', fname: str, background=255) -> 'Image':
-        img = io.imread(fname).astype('uint8')
+    def read_from(cls: 'Image', fname: str, as_grey: bool=False,
+                  background=255) -> 'Image':
+        img = io.imread(fname, as_grey=as_grey)
         return cls(img, background=background)
 
     @classmethod

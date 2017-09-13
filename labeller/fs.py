@@ -5,7 +5,7 @@ from typing import Union
 
 def new_char_file(chars_dir: str='chars') -> str:
     chars = os.listdir(chars_dir)
-    return '{}/{}.npy'.format(chars_dir, len(chars) or 0)
+    return '{}/{}.png'.format(chars_dir, len(chars) or 0)
 
 
 def read_json_from(fname: str) -> Union[dict, list]:

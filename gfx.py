@@ -38,6 +38,10 @@ class Image:
         return Image(new_img, self.label, background)
 
     def save_to(self, fname: str) -> None:
+        io.imsave(fname, self._array)
+
+    def save_array_to(self, fname: str) -> None:
+        """Stores underlying NumPy array to file."""
         np.save(fname, self._array, allow_pickle=False)
 
     def binary(self, threshold: int=30) -> 'Image':

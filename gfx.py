@@ -1,4 +1,4 @@
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, List
 
 import numpy as np
 from skimage import io, morphology, measure
@@ -67,11 +67,11 @@ class Image:
         return Image(self._array[rect[0]:rect[2], rect[1]:rect[3]],
                      self.label, background=self._background)
 
-    def segments(self) -> Iterable['Image']:
+    def segments(self) -> List['Image']:
         labels = morphology.label(self._array, background=self._background)
         regions = measure.regionprops(labels)
-        return map(lambda region: self.rect(region.bbox),
-                   sorted(regions, key=lambda r: r.bbox[1]))
+        return [self.rect(region.bbox) for region in
+                sorted(regions, key=lambda r: r.bbox[1])]
 
     def resize_to(self, new_height: int, new_width: int) -> 'Image':
         height, width = self._array.shape

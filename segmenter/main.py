@@ -8,6 +8,12 @@ sys.path.insert(0, '..')
 import gfx
 
 
+# TODO:
+#   extract character segments:
+#       * http://www.cvc.uab.es/icdar2009/papers/3725a011.pdf
+#       * match template of existing character to separate touching symbols
+#       * use tesseract to recognize where segmentation fails
+#   deskew segment images
 # TODO: option to save segments as NumPy arrays?
 
 @click.command()

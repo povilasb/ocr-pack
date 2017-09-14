@@ -8,14 +8,6 @@ from gfx import Image
 import ml
 
 
-# TODO:
-#   extract character segments:
-#       * http://www.cvc.uab.es/icdar2009/papers/3725a011.pdf
-#       * match template of existing character to separate touching symbols
-#       * use tesseract to recognize where segmentation fails
-#   deskew segment images
-
-
 # bbox: (y1, x1, y2, x2)
 
 

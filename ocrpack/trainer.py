@@ -4,11 +4,11 @@ Classifier is permanently stored to disk so that could be reloaded when
 prediction operations are needed.
 """
 
-import ml
+from . import ml
 
 
 def main():
-    data = ml.TrainingData('labeller/labelled-chars')
+    data = ml.TrainingData('labelled-chars')
     imgs, labels = data.all_labelled_imgs()
 
     clf = ml.CharClassifier(6, 8)

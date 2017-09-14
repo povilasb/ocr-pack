@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.externals import joblib
 import numpy as np
 
-from gfx import Image
+from .gfx import Image
 
 
 class CharClassifier:

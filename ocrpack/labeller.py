@@ -5,7 +5,8 @@ from flask import render_template, Flask, send_from_directory, request
 
 from . import fs
 
-app = Flask(__name__)
+
+app = Flask(__name__, root_path=os.getcwd())
 
 
 @app.route('/')

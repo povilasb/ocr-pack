@@ -36,6 +36,7 @@ def all_labelled_images() -> Iterable[Image]:
     ])
 
 
+# TODO: remove once ml.TrainingData is done.
 class TrainingData:
     def __init__(self) -> None:
         self.max_height, self.max_width = max_char_size_in(

@@ -93,3 +93,6 @@ class Image:
     def show(self) -> None:
         io.imshow(self._array)
         io.show()
+
+    def into_array(self) -> np.ndarray:
+        return self._array

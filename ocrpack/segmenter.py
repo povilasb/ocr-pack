@@ -3,9 +3,7 @@ import os
 
 import click
 
-import sys
-sys.path.insert(0, '..')
-import gfx
+from . import gfx
 
 
 # TODO:

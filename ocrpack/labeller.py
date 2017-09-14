@@ -3,7 +3,7 @@ import shutil
 
 from flask import render_template, Flask, send_from_directory, request
 
-import fs
+from . import fs
 
 app = Flask(__name__)
 

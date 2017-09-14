@@ -29,8 +29,8 @@ import gfx
                    'But do not proceed with segmentation.')
 @click.option('--binary-threshold', '--bin-thr', 'binary_threshold',
               type=float,
-              help='If this value is set, resulting image will have only two'\
-                    'colors: background and foreground. Pixels with greater'\
+              help='If this value is set, resulting image will have only two '\
+                    'colors: background and foreground. Pixels with greater '\
                     'value than this will be obtain background color and '\
                     'with smaller value - foreground color.')
 @click.option('--out-dir', '-o', 'save_to_dir', type=str,

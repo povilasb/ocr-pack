@@ -2,14 +2,25 @@
 About
 =====
 
-This is a small CLI tool to segment image into characters.
+OCR pack contains multiple tools and Python libraries to make optical
+character recognition easer.
 
-Usage
-=====
+The pack includes:
 
-::
+* image manipulation library for Python 3
+* image segmentation tool
+* image labelling Web based app
+* machine learning classifier and a CLI tool to build it
+* OCR tool to predict characters in a given image
 
-    python3 main.py --help
+Segmenter
+=========
+
+It is a small CLI tool to segment image into characters.
+
+Usage::
+
+    python3 -m ocrpack.segmenter --help
     Usage: main.py [OPTIONS]
 
     Options:
@@ -38,3 +49,10 @@ Usage
                                       this option is not specified, segments are
                                       simply displayed.
       --help                          Show this message and exit.
+
+Labeller
+========
+
+This is `Flask <http://flask.pocoo.org/>`_ based Web application that
+helps to label image samples as characters.
+Then those character images might be used to train the classifier.

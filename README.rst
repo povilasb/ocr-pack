@@ -4,6 +4,19 @@ About
 
 OCR pack contains multiple tools and Python libraries to make optical
 character recognition easer.
+Currently this solution is only viable when characters are clearly segmented,
+meaning they don't touch.
+I know this doesn't cover many OCR cases, but at the same time it can solve
+some custom problems too:
+
+* text recognition in desktop window
+* license plate recognition
+* simple `CAPTCHA <https://en.wikipedia.org/wiki/CAPTCHA>`_ recognition
+
+This solution overall is the similar to `MNIST
+<http://blog.povilasb.com/posts/mnist-with-scikit-learn/>`_ solution where
+the algorithm can only recognize single digit.
+The only difference is that this solution works with any characters.
 
 The pack includes:
 
@@ -27,7 +40,7 @@ Usage::
       -f, --file TEXT                 Absolute or relative path to image.
                                       [required]
       --invert BOOLEAN                Invert colors before doing segmentation.
-                                      This optionalso makes the stored segments to
+                                      This option also makes the stored segments to
                                       be inverted.  [default: True]
       --resize-to TEXT                Resize segments before saving to file. E.g.
                                       "8, 6" where 8 is width and 6 is height.
@@ -56,3 +69,8 @@ Labeller
 This is `Flask <http://flask.pocoo.org/>`_ based Web application that
 helps to label image samples as characters.
 Then those character images might be used to train the classifier.
+
+See Also
+========
+
+* https://matthewearl.github.io/2016/05/06/cnn-anpr/

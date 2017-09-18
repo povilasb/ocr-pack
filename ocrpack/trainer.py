@@ -11,11 +11,11 @@ from . import ml
 
 @click.command()
 @click.option('-i', '--input-dir', 'input_dir', type=str,
-              default='labelled-chars',
+              default='labelled-chars', show_default=True,
               help='Absolute or relative path to directory with labelled '\
                    'character images.',)
 @click.option('-o', '--output', 'classifier_path', type=str,
-              default='char_classifier.pkl',
+              default='char_classifier.pkl', show_default=True,
               help='Absolute or relative path to where character classifier '\
                    'will be saved.',)
 def main(input_dir: str, classifier_path: str) -> None:

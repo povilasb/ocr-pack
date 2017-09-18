@@ -22,16 +22,9 @@ The pack includes:
 
 * image manipulation library for Python 3
 * `image segmentation tool <docs/segmenter.rst>`_
-* image labelling Web based app
-* machine learning classifier and a CLI tool to build it
+* `image labelling Web based app <docs/labeller.rst>`_
+* `machine learning classifier and a CLI tool to build it <docs/trainer.rst>`_
 * OCR tool to predict characters in a given image
-
-Labeller
-========
-
-This is `Flask <http://flask.pocoo.org/>`_ based Web application that
-helps to label image samples as characters.
-Then those character images might be used to train the classifier.
 
 See Also
 ========

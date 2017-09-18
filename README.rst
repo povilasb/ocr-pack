@@ -24,7 +24,7 @@ The pack includes:
 * `image segmentation tool <docs/segmenter.rst>`_
 * `image labelling Web based app <docs/labeller.rst>`_
 * `machine learning classifier and a CLI tool to build it <docs/trainer.rst>`_
-* OCR tool to predict characters in a given image
+* `OCR tool to predict characters in a given image <docs/extractor.rst>`_
 
 See Also
 ========
